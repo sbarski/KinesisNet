@@ -12,7 +12,7 @@ The idea behind this project was to make the consumption of the AWS Kinesis pipe
 
 (If you are going to use this library please set up an IAM user and grant him access to Kinesis and Dynamo. The library will automatically create the right tables and persist checkpoints. However, you can turn off Dynamo if you do not wish to use it).
 
-The library also allows you to put records onto the stream (via the Producer component) and make changes to the stream (via the Utilities component). The major of advantage of using a library such as this is that it will handle complex events such as resharding automatically. The library looks at the stream at regular intervals and automatically adjusts to the conditions at hand.
+The library also allows you to put records onto the stream (via the Producer component) and make changes to the stream (via the Utilities component). The major advantage of using a library such as this is that it will handle complex events such as resharding automatically. The library looks at the stream at regular intervals and automatically adjusts to the conditions at hand.
 
 There are two major dependencies to this library - AWS SDK and Serilog. If folks prefer to use Log4Net please let me know and/or issue a pull request. 
 
