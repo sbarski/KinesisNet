@@ -38,8 +38,9 @@ Create an instance of KManager with your credentials and then use the Consumer t
         var awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
         var streamName = ConfigurationManager.AppSettings["AWSStreamName"];
         var regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
+        var workerId = "MyComputer";
 
-        var kManager = new KManager(awsKey, awsSecret, streamName, regionEndpoint);
+        var kManager = new KManager(awsKey, awsSecret, streamName, regionEndpoint, workerId);
 
         var result = kManager
                     .Consumer
