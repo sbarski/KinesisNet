@@ -6,7 +6,7 @@ A simple kinesis consumer/producer library for .NET
 ## Overview 
 This is a basic library for handling Amazon Kinesis partly inspired by the excellent [ReactoKinesisX](https://github.com/theburningmonk/ReactoKinesiX).
 
-While it's not as (yet) fully featured as the aforementioned library it is enough to play with.
+While it's not as (yet) fully featured as the aforementioned library it is enough to play with. Pull requests are welcome.
 
 ## Basics
 ### Installation
