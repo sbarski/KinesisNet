@@ -8,6 +8,16 @@ This is a basic library for handling Amazon Kinesis partly inspired by the excel
 
 While it's not as (yet) fully featured as the aforementioned library it is enough to play with. Pull requests are welcome.
 
+The idea behind this project was to make the consumption of the AWS Kinesis pipeline/stream easier on .NET. This library allows you to subscribe to a stream and automatically retrieve records as they appear in the stream. The library uses DynamoDB to store checkpoints so that you can interrupt the processing of messages (at any point) and then seamlessly resume from where you left off. 
+
+(If you are going to use this library please set up an IAM user and grant him access to Kinesis and Dynamo. The library will automatically create the right tables and persist checkpoints. However, you can turn off Dynamo if you do not wish to use it).
+
+The library also allows you to put records onto the stream (via the Producer component) and make changes to the stream (via the Utilities component). The major of advantage of using a library such as this is that it will handle complex events such as resharding automatically. The library looks at the stream at regular intervals and automatically adjusts to the conditions at hand.
+
+There are two major dependencies to this library - AWS SDK and Serilog. If folks prefer to use Log4Net please let me know and/or issue a pull request. 
+
+Please feel free to drive-test this library and raise issues/pull requests against the code. There is a sample project included that will give you a sense for how to use KinesisNet.
+
 ## Basics
 ### Installation
 
