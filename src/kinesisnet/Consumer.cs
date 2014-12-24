@@ -169,7 +169,7 @@ namespace KinesisNet
                         Log.Information("Shards Found: {0}", shards.Count);
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(10));
+                    await Task.Delay(TimeSpan.FromMinutes(2));
                 }
             },  _cancellationTokenSource.Token);
 
