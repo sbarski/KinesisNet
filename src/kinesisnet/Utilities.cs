@@ -11,7 +11,7 @@ using Serilog;
 
 namespace KinesisNet
 {
-    public class Utilities : IUtilities
+    internal class Utilities : IUtilities
     {
         private readonly AmazonKinesisClient _client;
         private readonly string _streamName;
