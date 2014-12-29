@@ -14,8 +14,8 @@ namespace KinesisNet
     internal class Utilities : IUtilities
     {
         private readonly AmazonKinesisClient _client;
-        private readonly string _streamName;
 
+        private string _streamName;
         private string _workerId;
         private ILogger _logger;
 
@@ -24,10 +24,9 @@ namespace KinesisNet
 
         private static ConcurrentDictionary<string, string> _workingConsumer; 
 
-        public Utilities(AmazonKinesisClient client, string streamName, string workerId)
+        public Utilities(AmazonKinesisClient client, string workerId)
         {
             _client = client;
-            _streamName = streamName;
 
             _readCapacityUnits = 1;
             _writeCapacityUnits = 1;
@@ -36,8 +35,6 @@ namespace KinesisNet
             {
                 _workingConsumer = new ConcurrentDictionary<string, string>();
             }
-
-            SetWorkerId(workerId, _streamName);
 
             _logger = new LoggerConfiguration()
                 .WriteTo
@@ -160,32 +157,6 @@ namespace KinesisNet
             return stream.StreamDescription.Shards;
         }
 
-        private IUtilities SetWorkerId(string workerId, string streamName)
-        {
-            if (string.IsNullOrEmpty(workerId) || string.IsNullOrEmpty(streamName))
-            {
-                throw  new ArgumentException("The WorkerId or the stream name cannot be null");
-            }
-
-            string existingStreamName;
-            if (_workingConsumer.TryGetValue(workerId, out existingStreamName))
-            {
-                if (string.Equals(existingStreamName, streamName))
-                {
-                    throw new ArgumentException("You cannot run more than one instance of the consumer for the same stream name");
-                }
-            }
-
-            if (!_workingConsumer.TryAdd(workerId, streamName))
-            {
-                throw new ArgumentException("Could not add workerId");
-            }
-
-            _workerId = workerId;
-
-            return this;
-        }
-
         public IUtilities SetDynamoReadCapacityUnits(int readCapacityUnits)
         {
             _readCapacityUnits = readCapacityUnits;
@@ -222,6 +193,20 @@ namespace KinesisNet
             var response = _client.ListStreams(listStreamsRequest);
 
             return response;
+        }
+
+        public IUtilities SetWorkerId(string workerId)
+        {
+            _workerId = workerId;
+
+            return this;
+        }
+
+        public IUtilities SetStreamName(string streamName)
+        {
+            _streamName = streamName;
+
+            return this;
         }
     }
 }

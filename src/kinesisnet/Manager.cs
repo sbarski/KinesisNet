@@ -16,7 +16,24 @@ namespace KinesisNet
         private readonly IUtilities _utilities = null;
         private readonly IDynamoDB _dynamoDb = null;
 
-        public KManager(string awsKey, string awsSecret, string streamName, AmazonKinesisConfig config, string workerId = null)
+        public KManager(string awsKey, string awsSecret, string streamName, AmazonKinesisConfig config, string workerId = null) : 
+            this(awsKey, awsSecret, config, workerId)
+        {
+            _utilities.SetStreamName(streamName);
+        }
+
+        public KManager(string awsKey, string awsSecret, string streamName, RegionEndpoint regionEndpoint, string workerId = null) : 
+            this(awsKey, awsSecret, streamName, new AmazonKinesisConfig() {RegionEndpoint = regionEndpoint}, workerId)
+        {
+            _utilities.SetStreamName(streamName);
+        }
+
+        public KManager(string awsKey, string awsSecret, RegionEndpoint regionEndpoint, string workerId = null) :
+            this(awsKey, awsSecret, new AmazonKinesisConfig() { RegionEndpoint = regionEndpoint }, workerId)
+        {
+        }
+
+        public KManager(string awsKey, string awsSecret, AmazonKinesisConfig config, string workerId = null)
         {
             if (workerId == null)
             {
@@ -25,19 +42,13 @@ namespace KinesisNet
 
             _client = new AmazonKinesisClient(awsKey, awsSecret, config);
 
-            _utilities = new Utilities(_client, streamName, workerId);
+            _utilities = new Utilities(_client, workerId);
             _dynamoDb = new DynamoDB(awsKey, awsSecret, config.RegionEndpoint, _utilities);
 
-            _producer = new Producer(_client, streamName);
+            _producer = new Producer(_client, _utilities);
             _consumer = new Consumer(_client, _utilities, _dynamoDb);
 
             Log.Information("Instantiated KManager");
-        }
-
-        public KManager(string awsKey, string awsSecret, string streamName, RegionEndpoint regionEndpoint, string workerId = null) : 
-            this(awsKey, awsSecret, streamName, new AmazonKinesisConfig() {RegionEndpoint = regionEndpoint}, workerId)
-        {
-            
         }
 
         public IConsumer Consumer

@@ -26,10 +26,11 @@ namespace KinesisNet.Example
         {
             var awsKey = ConfigurationManager.AppSettings["AWSKey"];
             var awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
-            var streamName = ConfigurationManager.AppSettings["AWSStreamName"];
             var regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
 
-            var kManager = new KManager(awsKey, awsSecret, streamName, regionEndpoint);
+            var kManager = new KManager(awsKey, awsSecret, regionEndpoint);
+
+            kManager.Utilities.SetStreamName("TestStream");
 
             var result = kManager
                         .Consumer

@@ -45,11 +45,21 @@ namespace KinesisNet
             return this;
         }
 
-        public Result Start(IRecordProcessor recordProcessor)
+        public Result Start(IRecordProcessor recordProcessor, string streamName = null)
         {
             if (_isRunning)
             {
                 return Result.Create(false, "KinesisNet has already started. Please stop it first.");
+            }
+
+            if (!string.IsNullOrEmpty(streamName))
+            {
+                _utilities.SetStreamName(streamName);
+            }
+
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                return Result.Create(false, "Please set a stream name.");
             }
 
             _dynamoDb.Init();

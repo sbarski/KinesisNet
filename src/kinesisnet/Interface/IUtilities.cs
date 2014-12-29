@@ -25,8 +25,10 @@ namespace KinesisNet.Interface
 
         IUtilities SetDynamoReadCapacityUnits(int readCapacityUnits);
         IUtilities SetDynamoWriteCapacityUnits(int writeCapacityUnits);
-
+        IUtilities SetStreamName(string streamName);
+        IUtilities SetWorkerId(string workerId);
         IUtilities SetLogConfiguration(LoggerConfiguration configuration);
+
         ILogger Log { get; }
         Task<ListStreamsResponse> ListStreamsAsync(string exclusiveStreamStartName = null);
         ListStreamsResponse ListStreams(string exclusiveStreamStartName = null);

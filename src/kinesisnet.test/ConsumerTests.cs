@@ -19,10 +19,9 @@ namespace KinesisNet.Test
         {
             _awsKey = ConfigurationManager.AppSettings["AWSKey"];
             _awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
-            _streamName = ConfigurationManager.AppSettings["AWSStreamName"];
             _regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
 
-            _manager = new KManager(_awsKey, _awsSecret, _streamName, _regionEndpoint);
+            _manager = new KManager(_awsKey, _awsSecret, _regionEndpoint);
         }
 
         [Fact]
@@ -33,20 +32,12 @@ namespace KinesisNet.Test
         }
 
         [Fact]
-        public void CannotCreateTwoConsumersWithTheSameWorkerId()
+        public void CannotRunConsumerWithoutStreamName()
         {
-            Assert.Throws<ArgumentException>(() => new KManager(_awsKey, _awsSecret, _streamName, RegionEndpoint.APSoutheast2));
-        }
+            var result = _manager.Consumer.Start(new RecordProcessor());
 
-        [Fact]
-        public void CanCreateTwoConsumersWithDifferentWorkingId()
-        {
-            var firstId = _manager.Utilities.WorkerId;
-            const string secondId = "second-id";
-
-            Assert.NotEqual(firstId, secondId);
-
-            Assert.DoesNotThrow(() => new KManager(_awsKey, _awsSecret, _streamName, RegionEndpoint.APSoutheast2, secondId));
+            Assert.Equal(result.Success, false);
+            Assert.Equal(result.Message, "Please set a stream name.");
         }
 
         [Fact]
