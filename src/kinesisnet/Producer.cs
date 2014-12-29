@@ -12,16 +12,21 @@ namespace KinesisNet
     internal class Producer : IProducer
     {
         private readonly AmazonKinesisClient _client;
-        private readonly string _streamName;
+        private readonly IUtilities _utilities;
 
-        public Producer(AmazonKinesisClient client, string streamName)
+        public Producer(AmazonKinesisClient client, IUtilities utilities)
         {
             _client = client;
-            _streamName = streamName;
+            _utilities = utilities;
         }
 
         public PutRecordResponse PutRecord(string record, string partitionKey = null)
         {
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                throw new Exception("You must set a stream name before you can put a record");
+            }
+
             var bytes = Encoding.UTF8.GetBytes(record);
 
             return PutRecord(bytes, partitionKey);
@@ -29,11 +34,16 @@ namespace KinesisNet
 
         public PutRecordResponse PutRecord(byte[] data, string partitionKey = null)
         {
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                throw new Exception("You must set a stream name before you can put a record");
+            }
+
             using (var ms = new MemoryStream(data))
             {
                 var requestRecord = new PutRecordRequest()
                 {
-                    StreamName = _streamName,
+                    StreamName = _utilities.StreamName,
                     Data = ms,
                     PartitionKey = partitionKey ?? Guid.NewGuid().ToString()
                 };
@@ -44,6 +54,11 @@ namespace KinesisNet
 
         public async Task<PutRecordResponse> PutRecordAsync(string record, string partitionKey = null)
         {
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                throw new Exception("You must set a stream name before you can put a record");
+            }
+
             var bytes = Encoding.UTF8.GetBytes(record);
 
             return await PutRecordAsync(bytes, partitionKey);
@@ -51,11 +66,16 @@ namespace KinesisNet
 
         public async Task<PutRecordResponse> PutRecordAsync(byte[] data, string partitionKey = null)
         {
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                throw new Exception("You must set a stream name before you can put a record");
+            }
+
             using (var ms = new MemoryStream(data))
             {
                 var requestRecord = new PutRecordRequest()
                 {
-                    StreamName = _streamName,
+                    StreamName = _utilities.StreamName,
                     Data = ms,
                     PartitionKey = partitionKey ?? Guid.NewGuid().ToString()
                 };

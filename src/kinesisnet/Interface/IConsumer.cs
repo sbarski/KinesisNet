@@ -6,7 +6,7 @@ namespace KinesisNet.Interface
     {
         IConsumer EnableSaveToDynamo(bool saveProgress = true);
 
-        Result Start(IRecordProcessor recordProcessor);
+        Result Start(IRecordProcessor recordProcessor, string streamName = null);
         void Stop();
     }
 }
