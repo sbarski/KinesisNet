@@ -2,14 +2,14 @@
 <package>
   <metadata>
     <id>KinesisNet</id>
-    <version>0.0.0.3</version>
+    <version>0.0.0.4</version>
     <authors>Peter Sbarski</authors>
     <owners>petersbarski</owners>
     <projectUrl>http://github.com/sbarski/KinesisNet</projectUrl>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple kinesis consumer/producer library for .NET</description>
-    <releaseNotes>Initial File Release</releaseNotes>
+    <releaseNotes>Made stream name an optional in the constructor. Can be set via utilities.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <dependencies>
       <dependency id="AWSSDK" version="2.3.13.1" />
