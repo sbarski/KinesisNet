@@ -28,5 +28,7 @@ namespace KinesisNet.Interface
 
         IUtilities SetLogConfiguration(LoggerConfiguration configuration);
         ILogger Log { get; }
+        Task<ListStreamsResponse> ListStreamsAsync(string exclusiveStreamStartName = null);
+        ListStreamsResponse ListStreams(string exclusiveStreamStartName = null);
     }
 }

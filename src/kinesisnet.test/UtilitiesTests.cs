@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Amazon;
 using Xunit;
 
@@ -25,6 +26,35 @@ namespace KinesisNet.Test
             _regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
 
             _manager = new KManager(_awsKey, _awsSecret, _streamName, _regionEndpoint);
+        }
+
+        [Fact]
+        public void ListStreams()
+        {
+            var response = _manager.Utilities.ListStreams();
+            Assert.NotNull(response);
+            Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
+            Assert.Equal(response.StreamNames.Count, 1);
+
+            response = _manager.Utilities.ListStreams("Test");
+            Assert.NotNull(response);
+            Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
+            Assert.Equal(response.StreamNames.Count, 1);
+        }
+
+        [Fact]
+        public async Task ListStreamsAsync()
+        {
+            var response = await _manager.Utilities.ListStreamsAsync();
+
+            Assert.NotNull(response);
+            Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
+            Assert.Equal(response.StreamNames.Count, 1);
+
+            response = await _manager.Utilities.ListStreamsAsync("Test");
+            Assert.NotNull(response);
+            Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
+            Assert.Equal(response.StreamNames.Count, 1);
         }
 
         [Fact]
