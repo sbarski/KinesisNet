@@ -199,5 +199,29 @@ namespace KinesisNet
 
             return this;
         }
+
+        public async Task<ListStreamsResponse> ListStreamsAsync(string exclusiveStreamStartName = null)
+        {
+            var listStreamsRequest = new ListStreamsRequest()
+            {
+                ExclusiveStartStreamName = exclusiveStreamStartName ?? default(string)
+            };
+
+            var response = await _client.ListStreamsAsync(listStreamsRequest);
+
+            return response;
+        }
+
+        public ListStreamsResponse ListStreams(string exclusiveStreamStartName = null)
+        {
+            var listStreamsRequest = new ListStreamsRequest()
+            {
+                ExclusiveStartStreamName = exclusiveStreamStartName ?? default(string)
+            };
+
+            var response = _client.ListStreams(listStreamsRequest);
+
+            return response;
+        }
     }
 }
