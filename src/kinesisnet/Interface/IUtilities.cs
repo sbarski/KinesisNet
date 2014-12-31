@@ -11,8 +11,10 @@ namespace KinesisNet.Interface
         string WorkerId { get; }
         SplitShardResponse SplitShard(Shard shard);
         MergeShardsResponse MergeShards(string leftShard, string rightShard);
-        DescribeStreamResponse GetStreamResponse();
-        Task<DescribeStreamResponse> GetStreamResponseAsync();
+
+        DescribeStreamResponse GetStreamResponse(string streamName = null);
+        Task<DescribeStreamResponse> GetStreamResponseAsync(string streamName = null);
+
         IList<Shard> GetActiveShards();
         IList<Shard> GetDisabledShards();
         IList<Shard> GetShards();

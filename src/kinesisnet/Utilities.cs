@@ -105,16 +105,26 @@ namespace KinesisNet
             return response;
         }
 
-        public DescribeStreamResponse GetStreamResponse()
+        public DescribeStreamResponse GetStreamResponse(string streamName = null)
         {
-            var request = new DescribeStreamRequest() { StreamName = _streamName };
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to get the stream response.");
+            }
+
+            var request = new DescribeStreamRequest() { StreamName = streamName ?? _streamName };
 
             return _client.DescribeStream(request);
         }
 
-        public async Task<DescribeStreamResponse> GetStreamResponseAsync()
+        public async Task<DescribeStreamResponse> GetStreamResponseAsync(string streamName = null)
         {
-            var request = new DescribeStreamRequest() { StreamName = _streamName };
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to get the stream response.");
+            }
+
+            var request = new DescribeStreamRequest() { StreamName = streamName ?? _streamName };
 
             return await _client.DescribeStreamAsync(request);
         }
