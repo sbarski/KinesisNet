@@ -50,5 +50,13 @@ namespace KinesisNet.Test
             Assert.Equal(result.Success, true);
             Assert.Equal(result.Message, "Processing System");
         }
+
+        [Fact]
+        public void CannotGetStreamResponseWithoutStreamName()
+        {
+            var ex = Assert.Throws<Exception>(() => _manager.Utilities.GetStreamResponse());
+
+            Assert.Equal(ex.Message, "Please specify a stream name to get the stream response.");
+        }
     }
 }
