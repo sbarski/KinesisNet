@@ -31,6 +31,8 @@ namespace KinesisNet
             _readCapacityUnits = 1;
             _writeCapacityUnits = 1;
 
+            _workerId = workerId;
+
             if (_workingConsumer == null)
             {
                 _workingConsumer = new ConcurrentDictionary<string, string>();
