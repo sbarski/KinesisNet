@@ -272,7 +272,7 @@ namespace KinesisNet
         {
             if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
             {
-                throw new Exception("Please specify a stream name to add tags");
+                throw new Exception("Please specify a stream name to list tags");
             }
 
             var listTagsRequest = new ListTagsForStreamRequest()
@@ -290,7 +290,7 @@ namespace KinesisNet
         {
             if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
             {
-                throw new Exception("Please specify a stream name to add tags");
+                throw new Exception("Please specify a stream name to list tags");
             }
 
             var listTagsRequest = new ListTagsForStreamRequest()
@@ -308,7 +308,12 @@ namespace KinesisNet
         {
             if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
             {
-                throw new Exception("Please specify a stream name to add tags");
+                throw new Exception("Please specify a stream name to remove tags");
+            }
+
+            if (tagKeys == null || tagKeys.Count == 0)
+            {
+                throw new Exception("Please specify one or more tag keys to remove");
             }
 
             var removeTagsRequest = new RemoveTagsFromStreamRequest()
@@ -326,7 +331,12 @@ namespace KinesisNet
         {
             if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
             {
-                throw new Exception("Please specify a stream name to add tags");
+                throw new Exception("Please specify a stream name to remove tags");
+            }
+
+            if (tagKeys == null || tagKeys.Count == 0)
+            {
+                throw new Exception("Please specify one or more tag keys to remove");
             }
 
             var removeTagsRequest = new RemoveTagsFromStreamRequest()
