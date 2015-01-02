@@ -34,5 +34,11 @@ namespace KinesisNet.Interface
         ILogger Log { get; }
         Task<ListStreamsResponse> ListStreamsAsync(string exclusiveStreamStartName = null);
         ListStreamsResponse ListStreams(string exclusiveStreamStartName = null);
+        AddTagsToStreamResponse AddTagsToStream(Dictionary<string, string> tags, string streamName = null);
+        Task<AddTagsToStreamResponse> AddTagsToStreamAsync(Dictionary<string, string> tags, string streamName = null);
+        ListTagsForStreamResponse ListTags(string exclusiveStartTagKey = null, string streamName = null);
+        Task<ListTagsForStreamResponse> ListTagsAsync(string exclusiveStartTagKey = null, string streamName = null);
+        RemoveTagsFromStreamResponse RemoveTagsFromStream(List<string> tagKeys, string streamName = null);
+        Task<RemoveTagsFromStreamResponse> RemoveTagsFromStreamAsync(List<string> tagKeys, string streamName = null);
     }
 }

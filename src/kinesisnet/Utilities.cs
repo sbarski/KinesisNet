@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Kinesis;
 using Amazon.Kinesis.Model;
@@ -219,6 +220,134 @@ namespace KinesisNet
             _streamName = streamName;
 
             return this;
+        }
+
+        public AddTagsToStreamResponse AddTagsToStream(Dictionary<string, string> tags, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to add tags");
+            }
+
+            if (tags == null || tags.Count == 0 || tags.Count > 10)
+            {
+                throw new Exception("Please create a tag dictionary that's between 0 and 10 in size");
+            }
+
+            var addTagsRequest = new AddTagsToStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                Tags = tags
+            };
+
+            var response = _client.AddTagsToStream(addTagsRequest);
+
+            return response;
+        }
+
+        public async Task<AddTagsToStreamResponse> AddTagsToStreamAsync(Dictionary<string, string> tags, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to add tags");
+            }
+
+            if (tags == null || tags.Count == 0 || tags.Count > 10)
+            {
+                throw new Exception("Please create a tag dictionary that's between 0 and 10 in size");
+            }
+
+            var addTagsRequest = new AddTagsToStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                Tags = tags
+            };
+
+            var response = await _client.AddTagsToStreamAsync(addTagsRequest, CancellationToken.None);
+
+            return response;
+        }
+
+        public ListTagsForStreamResponse ListTags(string exclusiveStartTagKey = null, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to list tags");
+            }
+
+            var listTagsRequest = new ListTagsForStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                ExclusiveStartTagKey = exclusiveStartTagKey,
+            };
+
+            var response = _client.ListTagsForStream(listTagsRequest);
+
+            return response;
+        }
+
+        public async Task<ListTagsForStreamResponse> ListTagsAsync(string exclusiveStartTagKey = null, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to list tags");
+            }
+
+            var listTagsRequest = new ListTagsForStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                ExclusiveStartTagKey = exclusiveStartTagKey,
+            };
+
+            var response = await _client.ListTagsForStreamAsync(listTagsRequest);
+
+            return response;
+        }
+
+        public RemoveTagsFromStreamResponse RemoveTagsFromStream(List<string> tagKeys, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to remove tags");
+            }
+
+            if (tagKeys == null || tagKeys.Count == 0)
+            {
+                throw new Exception("Please specify one or more tag keys to remove");
+            }
+
+            var removeTagsRequest = new RemoveTagsFromStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                TagKeys = tagKeys
+            };
+
+            var response = _client.RemoveTagsFromStream(removeTagsRequest);
+
+            return response;
+        }
+
+        public async Task<RemoveTagsFromStreamResponse> RemoveTagsFromStreamAsync(List<string> tagKeys, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to remove tags");
+            }
+
+            if (tagKeys == null || tagKeys.Count == 0)
+            {
+                throw new Exception("Please specify one or more tag keys to remove");
+            }
+
+            var removeTagsRequest = new RemoveTagsFromStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                TagKeys = tagKeys
+            };
+
+            var response = await _client.RemoveTagsFromStreamAsync(removeTagsRequest);
+
+            return response;
         }
     }
 }
