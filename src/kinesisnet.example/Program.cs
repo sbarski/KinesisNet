@@ -28,7 +28,7 @@ namespace KinesisNet.Example
             var awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
             var regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
 
-            var kManager = new KManager(awsKey, awsSecret, regionEndpoint);
+            IKManager kManager = new KManager(awsKey, awsSecret, regionEndpoint);
 
             kManager.Utilities.SetStreamName("TestStream");
 
