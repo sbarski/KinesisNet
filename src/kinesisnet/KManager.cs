@@ -7,7 +7,7 @@ using Serilog;
 
 namespace KinesisNet
 {
-    public class KManager
+    public class KManager : IKManager
     {
         private readonly AmazonKinesisClient _client;
 

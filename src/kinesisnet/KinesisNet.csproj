@@ -50,12 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\AsyncExtensions.cs" />
+    <Compile Include="Interface\IKManager.cs" />
     <Compile Include="Interface\IConsumer.cs" />
     <Compile Include="Consumer.cs" />
     <Compile Include="Interface\IProducer.cs" />
     <Compile Include="Interface\IRecordProcessor.cs" />
     <Compile Include="Interface\IUtilities.cs" />
-    <Compile Include="Manager.cs" />
+    <Compile Include="KManager.cs" />
     <Compile Include="Model\KShard.cs" />
     <Compile Include="Model\RecordResponse.cs" />
     <Compile Include="Persistance\DynamoDB.cs" />
