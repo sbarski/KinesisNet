@@ -53,7 +53,11 @@ namespace KinesisNet.Persistance
             putItemRequest.Item.Add("Id", new AttributeValue(string.Format(KeyIdPattern, shardId, _utilities.WorkerId, _utilities.StreamName)));
             putItemRequest.Item.Add("ShardId", new AttributeValue(shardId));
 
-            putItemRequest.Item.Add("SequenceNumber", new AttributeValue(sequenceNumber ?? string.Empty));
+            if (!string.IsNullOrEmpty(sequenceNumber))
+            {
+                putItemRequest.Item.Add("SequenceNumber", new AttributeValue(sequenceNumber));
+            }
+
             putItemRequest.Item.Add("LastUpdate", new AttributeValue(lastUpdateUtc.ToString()));
 
             try
