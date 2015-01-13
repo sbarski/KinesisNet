@@ -39,7 +39,7 @@ namespace KinesisNet.Persistance
             CreateTableIfNotExists();
         }
 
-        public async Task SaveToDatabase(KShard kShard)
+        public async Task SaveToDatabase(string shardId, string sequenceNumber, DateTime lastUpdateUtc)
         {
             if (!_tableExists)
             {
@@ -50,11 +50,11 @@ namespace KinesisNet.Persistance
 
             var putItemRequest = new PutItemRequest {TableName = TableName};
 
-            putItemRequest.Item.Add("Id", new AttributeValue(string.Format(KeyIdPattern, kShard.ShardId, _utilities.WorkerId, _utilities.StreamName)));
-            putItemRequest.Item.Add("ShardId", new AttributeValue(kShard.ShardId));
+            putItemRequest.Item.Add("Id", new AttributeValue(string.Format(KeyIdPattern, shardId, _utilities.WorkerId, _utilities.StreamName)));
+            putItemRequest.Item.Add("ShardId", new AttributeValue(shardId));
 
-            putItemRequest.Item.Add("SequenceNumber", new AttributeValue(kShard.SequenceNumber ?? string.Empty));
-            putItemRequest.Item.Add("LastUpdate", new AttributeValue(kShard.LastUpdate.ToString()));
+            putItemRequest.Item.Add("SequenceNumber", new AttributeValue(sequenceNumber ?? string.Empty));
+            putItemRequest.Item.Add("LastUpdate", new AttributeValue(lastUpdateUtc.ToString()));
 
             try
             {

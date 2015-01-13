@@ -8,7 +8,7 @@ namespace KinesisNet.Test
 {
     public class RecordProcessor : IRecordProcessor
     {
-        public void Process(string shardId, IList<Record> records)
+        public void Process(string shardId, string sequenceNumber, DateTime lastUpdate, IList<Record> records, Action<string, string, DateTime> saveCheckpoint)
         {
             Console.WriteLine(Thread.CurrentThread);
         }
