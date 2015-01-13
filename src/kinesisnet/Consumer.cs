@@ -110,7 +110,7 @@ namespace KinesisNet
 
                                 if (record != null)
                                 {
-                                    processor.Process(shard.ShardId, record.GetRecordsResponse.Records);
+                                    processor.Process(shard.ShardId, shard.SequenceNumber, shard.LastUpdateUtc, record.GetRecordsResponse.Records, SaveCheckpoint);
 
                                     if (record.GetRecordsResponse.NextShardIterator != null)
                                     {
@@ -119,8 +119,6 @@ namespace KinesisNet
                                         var getRecordsTask = GetRecordResponse(shard, record.CancellationToken);
 
                                         processShardsTask.TryAdd(getRecordsTask, shard);
-
-                                        await SetCheckpoint(shard);
                                     }
                                 }
                             }
@@ -146,6 +144,7 @@ namespace KinesisNet
                 Log.Debug(e, "ProcessShardsAsync was cancelled");
             }
         }
+
 
         private Task WatchForShardUpdates(ConcurrentDictionary<Task<RecordResponse>, KShard> processShardsTask)
         {
@@ -222,11 +221,11 @@ namespace KinesisNet
             shard.SetNextShardIterator(response.ShardIterator);
         }
 
-        private async Task SetCheckpoint(KShard kShard)
+        private void SaveCheckpoint(string shardId, string sequenceNumber, DateTime lastUpdateUtc)
         {
             if (_saveProgressToDynamo)
             {
-                await _dynamoDb.SaveToDatabase(kShard);
+                _dynamoDb.SaveToDatabase(shardId, sequenceNumber, lastUpdateUtc).Wait();
             }
         }
     }

@@ -10,7 +10,7 @@ namespace KinesisNet.Model
         public string ShardId { get; private set; }
         public string SequenceNumber { get; private set; }
         public string StreamName { get; private set; }
-        public DateTime LastUpdate { get; private set; }
+        public DateTime LastUpdateUtc { get; private set; }
 
         public string ShardIterator { get; private set; }
 
@@ -27,7 +27,7 @@ namespace KinesisNet.Model
             ShardIteratorType = shardIteratorType;
             SequenceNumber = sequenceNumber;
 
-            LastUpdate = DateTime.UtcNow;
+            LastUpdateUtc = DateTime.UtcNow;
         }
 
         public void UpdateShardInformation(GetRecordsResponse recordsResponse)
@@ -39,7 +39,7 @@ namespace KinesisNet.Model
                 SequenceNumber = recordsResponse.Records.LastOrDefault().SequenceNumber;
             }
 
-            LastUpdate = DateTime.UtcNow;
+            LastUpdateUtc = DateTime.UtcNow;
         }
 
         public void SetNextShardIterator(string shardIterator)
