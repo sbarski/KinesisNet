@@ -31,13 +31,15 @@ Create an instance of KManager with your credentials and then use the Consumer t
 
     public class RecordProcessor : IRecordProcessor
     {
-        public void Process(string shardId, IList<Record> records)
+        public void Process(string shardId, string sequenceNumber, DateTime lastUpdateUtc, IList<Record> records, Action<string, string, DateTime> saveCheckpoint)
         {
             foreach (var record in records)
             {
                 var msg = Encoding.UTF8.GetString(record.Data.ToArray());
                 Console.WriteLine("ShardId: {0}, Data: {1}", shardId, msg);
             }
+            
+            saveCheckpoint(shardId, sequenceNumber, lastUpdateUtc);
         }
     }
 
