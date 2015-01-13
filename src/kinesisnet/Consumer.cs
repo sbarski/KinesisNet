@@ -108,9 +108,9 @@ namespace KinesisNet
                             {
                                 var record = await task;
 
-                                if (record != null)
+                                if (record != null && record.GetRecordsResponse.Records.Any())
                                 {
-                                    processor.Process(shard.ShardId, shard.SequenceNumber, shard.LastUpdateUtc, record.GetRecordsResponse.Records, SaveCheckpoint);
+                                    processor.Process(shard.ShardId, record.GetRecordsResponse.Records.LastOrDefault().SequenceNumber, shard.LastUpdateUtc, record.GetRecordsResponse.Records, SaveCheckpoint);
 
                                     if (record.GetRecordsResponse.NextShardIterator != null)
                                     {

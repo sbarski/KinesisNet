@@ -33,7 +33,7 @@ namespace KinesisNet.Example
 
             IKManager kManager = new KManager(awsKey, awsSecret, regionEndpoint);
 
-            kManager.Utilities.SetStreamName("TestStream");
+            kManager.Utilities.SetStreamName("Notifications");
 
             var result = kManager
                         .Consumer
