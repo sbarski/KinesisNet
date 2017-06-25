@@ -9,10 +9,10 @@ namespace KinesisNet.Interface
     {
         string StreamName { get; }
         string WorkerId { get; }
-        Task<SplitShardResponse> SplitShard(Shard shard);
-        Task<MergeShardsResponse> MergeShards(string leftShard, string rightShard);
+        SplitShardResponse SplitShard(Shard shard);
+        MergeShardsResponse MergeShards(string leftShard, string rightShard);
 
-        Task<DescribeStreamResponse> GetStreamResponse(string streamName = null);
+        DescribeStreamResponse GetStreamResponse(string streamName = null);
         Task<DescribeStreamResponse> GetStreamResponseAsync(string streamName = null);
 
         IList<Shard> GetActiveShards();
@@ -33,8 +33,12 @@ namespace KinesisNet.Interface
 
         ILogger Log { get; }
         Task<ListStreamsResponse> ListStreamsAsync(string exclusiveStreamStartName = null);
+        ListStreamsResponse ListStreams(string exclusiveStreamStartName = null);
+        AddTagsToStreamResponse AddTagsToStream(Dictionary<string, string> tags, string streamName = null);
         Task<AddTagsToStreamResponse> AddTagsToStreamAsync(Dictionary<string, string> tags, string streamName = null);
+        ListTagsForStreamResponse ListTags(string exclusiveStartTagKey = null, string streamName = null);
         Task<ListTagsForStreamResponse> ListTagsAsync(string exclusiveStartTagKey = null, string streamName = null);
+        RemoveTagsFromStreamResponse RemoveTagsFromStream(List<string> tagKeys, string streamName = null);
         Task<RemoveTagsFromStreamResponse> RemoveTagsFromStreamAsync(List<string> tagKeys, string streamName = null);
     }
 }

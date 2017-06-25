@@ -121,7 +121,7 @@ namespace KinesisNet.Persistance
 
                             if (item.TryGetValue("ShardId", out shardId) && item.TryGetValue("SequenceNumber", out sequenceNumber))
                             {
-                                list.Add(new KShard(shardId.S, _utilities.StreamName, Amazon.Kinesis.ShardIteratorType.AFTER_SEQUENCE_NUMBER, sequenceNumber.S));
+                                list.Add(new KShard(shardId.S, _utilities.StreamName, ShardIteratorType.AFTER_SEQUENCE_NUMBER, sequenceNumber.S));
 
                                 shardIds.Remove(shardId.S);
                             }
@@ -141,13 +141,13 @@ namespace KinesisNet.Persistance
             }
         }
 
-        private async void CreateTableIfNotExists()
+        private void CreateTableIfNotExists()
         {
             var listTablesRequest = new ListTablesRequest { ExclusiveStartTableName = TableName.Substring(0, 6) };
 
             try
             {
-                var listTables = await _client.ListTablesAsync(listTablesRequest);
+                var listTables = _client.ListTables(listTablesRequest);
 
                 if (listTables.TableNames.Contains(TableName))
                 {
@@ -181,7 +181,7 @@ namespace KinesisNet.Persistance
                         }
                     };
 
-                    var response =await _client.CreateTableAsync(request);
+                    var response = _client.CreateTable(request);
 
                     if (response.HttpStatusCode != HttpStatusCode.OK)
                     {
@@ -193,7 +193,7 @@ namespace KinesisNet.Persistance
 
                     while (tableStatus != TableStatus.ACTIVE)
                     {
-                        var checkTableStatus = await _client.DescribeTableAsync(new DescribeTableRequest(TableName));
+                        var checkTableStatus = _client.DescribeTable(new DescribeTableRequest(TableName));
 
                         tableStatus = checkTableStatus.Table.TableStatus;
 

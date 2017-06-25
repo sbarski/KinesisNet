@@ -81,7 +81,7 @@ namespace KinesisNet
             get { return _logger; }
         }
 
-        public async Task<SplitShardResponse> SplitShard(Shard shard)
+        public SplitShardResponse SplitShard(Shard shard)
         {
             var startingHashKey = BigInteger.Parse(shard.HashKeyRange.StartingHashKey);
             var endingHashKey = BigInteger.Parse(shard.HashKeyRange.EndingHashKey);
@@ -89,12 +89,12 @@ namespace KinesisNet
 
             var splitShardRequest = new SplitShardRequest { StreamName = _streamName, ShardToSplit = shard.ShardId, NewStartingHashKey = newStartingHashKey.ToString() };
 
-            var response = await _client.SplitShardAsync(splitShardRequest);
+            var response = _client.SplitShard(splitShardRequest);
 
             return response;
         }
 
-        public async Task<MergeShardsResponse> MergeShards(string leftShard, string rightShard)
+        public MergeShardsResponse MergeShards(string leftShard, string rightShard)
         {
             var mergeShardRequest = new MergeShardsRequest
             {
@@ -103,12 +103,12 @@ namespace KinesisNet
                 StreamName = _streamName
             };
 
-            var response = await _client.MergeShardsAsync(mergeShardRequest);
+            var response = _client.MergeShards(mergeShardRequest);
 
             return response;
         }
 
-        public async Task<DescribeStreamResponse> GetStreamResponse(string streamName = null)
+        public DescribeStreamResponse GetStreamResponse(string streamName = null)
         {
             if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
             {
@@ -117,7 +117,7 @@ namespace KinesisNet
 
             var request = new DescribeStreamRequest() { StreamName = streamName ?? _streamName };
 
-            return await _client.DescribeStreamAsync(request);
+            return _client.DescribeStream(request);
         }
 
         public async Task<DescribeStreamResponse> GetStreamResponseAsync(string streamName = null)
@@ -146,7 +146,7 @@ namespace KinesisNet
         {
             var stream = GetStreamResponse();
 
-            return stream.Result.StreamDescription.Shards;
+            return stream.StreamDescription.Shards;
         }
 
         public async Task<IList<Shard>> GetDisabledShardsAsync()
@@ -196,6 +196,18 @@ namespace KinesisNet
             return response;
         }
 
+        public ListStreamsResponse ListStreams(string exclusiveStreamStartName = null)
+        {
+            var listStreamsRequest = new ListStreamsRequest()
+            {
+                ExclusiveStartStreamName = exclusiveStreamStartName ?? default(string)
+            };
+
+            var response = _client.ListStreams(listStreamsRequest);
+
+            return response;
+        }
+
         public IUtilities SetWorkerId(string workerId)
         {
             _workerId = workerId;
@@ -208,6 +220,29 @@ namespace KinesisNet
             _streamName = streamName;
 
             return this;
+        }
+
+        public AddTagsToStreamResponse AddTagsToStream(Dictionary<string, string> tags, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to add tags");
+            }
+
+            if (tags == null || tags.Count == 0 || tags.Count > 10)
+            {
+                throw new Exception("Please create a tag dictionary that's between 0 and 10 in size");
+            }
+
+            var addTagsRequest = new AddTagsToStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                Tags = tags
+            };
+
+            var response = _client.AddTagsToStream(addTagsRequest);
+
+            return response;
         }
 
         public async Task<AddTagsToStreamResponse> AddTagsToStreamAsync(Dictionary<string, string> tags, string streamName = null)
@@ -233,6 +268,24 @@ namespace KinesisNet
             return response;
         }
 
+        public ListTagsForStreamResponse ListTags(string exclusiveStartTagKey = null, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to list tags");
+            }
+
+            var listTagsRequest = new ListTagsForStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                ExclusiveStartTagKey = exclusiveStartTagKey,
+            };
+
+            var response = _client.ListTagsForStream(listTagsRequest);
+
+            return response;
+        }
+
         public async Task<ListTagsForStreamResponse> ListTagsAsync(string exclusiveStartTagKey = null, string streamName = null)
         {
             if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
@@ -247,6 +300,29 @@ namespace KinesisNet
             };
 
             var response = await _client.ListTagsForStreamAsync(listTagsRequest);
+
+            return response;
+        }
+
+        public RemoveTagsFromStreamResponse RemoveTagsFromStream(List<string> tagKeys, string streamName = null)
+        {
+            if (string.IsNullOrEmpty(streamName) && string.IsNullOrEmpty(_streamName))
+            {
+                throw new Exception("Please specify a stream name to remove tags");
+            }
+
+            if (tagKeys == null || tagKeys.Count == 0)
+            {
+                throw new Exception("Please specify one or more tag keys to remove");
+            }
+
+            var removeTagsRequest = new RemoveTagsFromStreamRequest()
+            {
+                StreamName = streamName ?? _streamName,
+                TagKeys = tagKeys
+            };
+
+            var response = _client.RemoveTagsFromStream(removeTagsRequest);
 
             return response;
         }

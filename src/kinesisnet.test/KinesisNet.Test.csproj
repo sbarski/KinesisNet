@@ -68,12 +68,6 @@
     <None Include="packages.config" />
     <None Include="User.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\kinesisnet\KinesisNet.csproj">
-      <Project>{d9e1f7c7-58b5-4c40-a52c-ae9727915b33}</Project>
-      <Name>KinesisNet</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

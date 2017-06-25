@@ -7,5 +7,8 @@ namespace KinesisNet.Interface
     {
         Task<PutRecordResponse> PutRecordAsync(string record, string partitionKey = null);
         Task<PutRecordResponse> PutRecordAsync(byte[] data, string partitionKey = null);
+
+        PutRecordResponse PutRecord(string record, string partitionKey = null);
+        PutRecordResponse PutRecord(byte[] data, string partitionKey = null);
     }
 }

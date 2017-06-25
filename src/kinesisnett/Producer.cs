@@ -20,6 +20,38 @@ namespace KinesisNet
             _utilities = utilities;
         }
 
+        public PutRecordResponse PutRecord(string record, string partitionKey = null)
+        {
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                throw new Exception("You must set a stream name before you can put a record");
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(record);
+
+            return PutRecord(bytes, partitionKey);
+        }
+
+        public PutRecordResponse PutRecord(byte[] data, string partitionKey = null)
+        {
+            if (string.IsNullOrEmpty(_utilities.StreamName))
+            {
+                throw new Exception("You must set a stream name before you can put a record");
+            }
+
+            using (var ms = new MemoryStream(data))
+            {
+                var requestRecord = new PutRecordRequest()
+                {
+                    StreamName = _utilities.StreamName,
+                    Data = ms,
+                    PartitionKey = partitionKey ?? Guid.NewGuid().ToString()
+                };
+
+                return _client.PutRecord(requestRecord);
+            }
+        }
+
         public async Task<PutRecordResponse> PutRecordAsync(string record, string partitionKey = null)
         {
             if (string.IsNullOrEmpty(_utilities.StreamName))
