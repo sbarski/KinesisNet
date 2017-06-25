@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace KinesisNet.Test
@@ -20,9 +17,13 @@ namespace KinesisNet.Test
 
         public ProducerTests()
         {
-            _awsKey = ConfigurationManager.AppSettings["AWSKey"];
-            _awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
-            _regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            _awsKey = configuration["AWSKey"];
+            _awsSecret = configuration["AWSSecret"];
+            _regionEndpoint = RegionEndpoint.GetBySystemName(configuration["AWSRegionEndpoint"]);
 
             _manager = new KManager(_awsKey, _awsSecret, _regionEndpoint);
         }
@@ -30,7 +31,7 @@ namespace KinesisNet.Test
         [Fact]
         public void CannotPutWithoutAStreamName()
         {
-            var ex = Assert.Throws<Exception>(() => _manager.Producer.PutRecord("TestRecord"));
+            var ex = Assert.Throws<Exception>(() => _manager.Producer.PutRecordAsync("TestRecord").Result);
 
             Assert.Equal(ex.Message, "You must set a stream name before you can put a record");
         }

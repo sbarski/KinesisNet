@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Configuration;
 using Amazon;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Xunit;
 
@@ -17,9 +17,13 @@ namespace KinesisNet.Test
 
         public ConsumerTests()
         {
-            _awsKey = ConfigurationManager.AppSettings["AWSKey"];
-            _awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
-            _regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            _awsKey = configuration["AWSKey"];
+            _awsSecret = configuration["AWSSecret"];
+            _regionEndpoint = RegionEndpoint.GetBySystemName(configuration["AWSRegionEndpoint"]);
 
             _manager = new KManager(_awsKey, _awsSecret, _regionEndpoint);
         }
@@ -54,7 +58,7 @@ namespace KinesisNet.Test
         [Fact]
         public void CannotGetStreamResponseWithoutStreamName()
         {
-            var ex = Assert.Throws<Exception>(() => _manager.Utilities.GetStreamResponse());
+            var ex = Assert.Throws<Exception>(() => _manager.Utilities.GetStreamResponse().Result);
 
             Assert.Equal(ex.Message, "Please specify a stream name to get the stream response.");
         }

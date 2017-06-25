@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace KinesisNet.Test
@@ -20,23 +20,26 @@ namespace KinesisNet.Test
 
         public UtilitiesTests()
         {
-            _awsKey = ConfigurationManager.AppSettings["AWSKey"];
-            _awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
-            _streamName = ConfigurationManager.AppSettings["AWSStreamName"];
-            _regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            _awsKey = configuration["AWSKey"];
+            _awsSecret = configuration["AWSSecret"];
+            _regionEndpoint = RegionEndpoint.GetBySystemName(configuration["AWSRegionEndpoint"]);
 
             _manager = new KManager(_awsKey, _awsSecret, _streamName, _regionEndpoint);
         }
 
         [Fact]
-        public void ListStreams()
+        public async void ListStreams()
         {
-            var response = _manager.Utilities.ListStreams();
+            var response = await _manager.Utilities.ListStreamsAsync();
             Assert.NotNull(response);
             Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
             Assert.Equal(response.StreamNames.Count, 1);
 
-            response = _manager.Utilities.ListStreams("Test");
+            response = await _manager.Utilities.ListStreamsAsync("Test");
             Assert.NotNull(response);
             Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
             Assert.Equal(response.StreamNames.Count, 1);
@@ -58,9 +61,9 @@ namespace KinesisNet.Test
         }
 
         [Fact]
-        public void GetStreamResponse()
+        public async void GetStreamResponse()
         {
-            var response = _manager.Utilities.GetStreamResponse();
+            var response = await _manager.Utilities.GetStreamResponse();
 
             Assert.NotNull(response);
             Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
@@ -84,11 +87,11 @@ namespace KinesisNet.Test
         }
 
         [Fact]
-        public void SplitShard()
+        public async void SplitShard()
         {
             var shards = _manager.Utilities.GetActiveShards();
 
-            var response = _manager.Utilities.SplitShard(shards.FirstOrDefault());
+            var response = await _manager.Utilities.SplitShard(shards.FirstOrDefault());
 
             Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
 
@@ -100,11 +103,11 @@ namespace KinesisNet.Test
         }
 
         [Fact]
-        public void MergeShards()
+        public async void MergeShards()
         {
             var shards = _manager.Utilities.GetActiveShards();
 
-            var response = _manager.Utilities.MergeShards(shards.ElementAt(0).ShardId, shards.ElementAt(1).ShardId);
+            var response = await _manager.Utilities.MergeShards(shards.ElementAt(0).ShardId, shards.ElementAt(1).ShardId);
 
             Assert.Equal(response.HttpStatusCode, HttpStatusCode.OK);
 
