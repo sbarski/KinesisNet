@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Amazon;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -58,9 +59,9 @@ namespace KinesisNet.Test
         [Fact]
         public void CannotGetStreamResponseWithoutStreamName()
         {
-            var ex = Assert.Throws<Exception>(() => _manager.Utilities.GetStreamResponse().Result);
+            var ex = Assert.Throws<AggregateException>(() => _manager.Utilities.GetStreamResponse().Result);
 
-            Assert.Equal(ex.Message, "Please specify a stream name to get the stream response.");
+            Assert.Equal("Please specify a stream name to get the stream response.", ex.InnerExceptions.First().Message);
         }
     }
 }

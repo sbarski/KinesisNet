@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using Microsoft.Extensions.Configuration;
@@ -31,9 +32,9 @@ namespace KinesisNet.Test
         [Fact]
         public void CannotPutWithoutAStreamName()
         {
-            var ex = Assert.Throws<Exception>(() => _manager.Producer.PutRecordAsync("TestRecord").Result);
+            var ex = Assert.Throws<AggregateException>(() => _manager.Producer.PutRecordAsync("TestRecord").Result);
 
-            Assert.Equal(ex.Message, "You must set a stream name before you can put a record");
+            Assert.Equal("You must set a stream name before you can put a record", ex.InnerExceptions.First().Message);
         }
 
         [Fact]
