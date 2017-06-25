@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Text;
 using Amazon;
 using Amazon.Kinesis.Model;
 using KinesisNet.Interface;
+using Microsoft.Extensions.Configuration;
 
 namespace KinesisNet.Example
 {
@@ -27,9 +27,13 @@ namespace KinesisNet.Example
     {
         static void Main(string[] args)
         {
-            var awsKey = ConfigurationManager.AppSettings["AWSKey"];
-            var awsSecret = ConfigurationManager.AppSettings["AWSSecret"];
-            var regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegionEndpoint"]);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var awsKey = configuration["AWSKey"];
+            var awsSecret = configuration["AWSSecret"];
+            var regionEndpoint = RegionEndpoint.GetBySystemName(configuration["AWSRegionEndpoint"]);
 
             IKManager kManager = new KManager(awsKey, awsSecret, regionEndpoint);
 
@@ -47,7 +51,7 @@ namespace KinesisNet.Example
 
                     if (m.Key == ConsoleKey.Enter)
                     {
-                        kManager.Producer.PutRecord("abc " + DateTime.UtcNow);
+                        kManager.Producer.PutRecordAsync("abc " + DateTime.UtcNow);
                     }
 
                     if (m.Key == ConsoleKey.Escape)
